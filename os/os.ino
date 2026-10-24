@@ -20,13 +20,6 @@ void setup() {
   EVA::tft.setRotation(0);
   EVA::tft.fillScreen(TFT_BLACK);
 
-  //Init Python
-  py_initialize();
-
-  bool ok = py_exec("print('Hello world!')", "<string>", EXEC_MODE, NULL);
-  if (ok) Serial.println("Python ok?");
-  //
-
   currentApp = new MenuApp();
 }
 

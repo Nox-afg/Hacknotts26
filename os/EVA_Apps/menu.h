@@ -11,23 +11,27 @@ using namespace EVA;
 class MenuApp : public EVA::App {
 public:
   MenuApp() : EVA::App("Menu") {
-    int p = EVA::tfte.drawStringWithBar("Menu", 0, 4, 0);
+    Box menuBox = EVA::tfte.drawStringWithBar("Menu", 0, 4, 10);
 
-    int p2 = EVA::tfte.drawStringWithBar("Test App", p+10, 4, 10);
-    testappbox = Box(0, p+10, SCREEN_WIDTH - 20, p2);
+    int yOffset = menuBox.h+10;
+
+    for (int i = 0; i < EVA::App::appNames.size(); i++) {
+      appBoxes.push_back(EVA::tfte.drawStringWithBar(EVA::App::appNames[i], yOffset, 4, 0));
+
+      yOffset += appBoxes.back().h+10;
+    }
   }
 
   ~MenuApp() override {}
 
   void loop() override {
-    EVA::tft.drawCentreString(String(EVA::Time::seconds), SCREEN_CENTER_X, SCREEN_CENTER_Y, 2);
-
     if (EVA::touched) {
-      if (Math::pointInBox(EVA::touchpoint, testappbox)) { EVA::switchToApp = "Test App"; Serial.println("Switching");}
+      for (int i = 0; i < appBoxes.size(); i++)
+        if (Math::pointInBox(EVA::touchpoint, appBoxes[i])) { EVA::switchToApp = EVA::App::appNames[i]; Serial.println("Switching");}
     }
   }
 private:
-  Box testappbox;
+  std::vector<Box> appBoxes;
 };
 
 #endif

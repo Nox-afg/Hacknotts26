@@ -23,8 +23,6 @@
 #include <EVA_App.h>
 #include <EVA_math.h>
 
-#include <pocketpy.h>
-
 namespace EVA {
   inline SPIClass touchscreenSPI = SPIClass(VSPI);
   inline XPT2046_Touchscreen touchscreen(XPT2046_CS, XPT2046_IRQ);

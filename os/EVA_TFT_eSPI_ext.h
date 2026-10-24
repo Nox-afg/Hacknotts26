@@ -4,6 +4,7 @@
 #include <SPI.h>
 #include <TFT_eSPI.h>    
 #include <XPT2046_Touchscreen.h> 
+#include <EVA_math.h>
 
 #if !defined(SCREEN_WIDTH) || !defined(SCREEN_HEIGHT)
 #error "Screen Info must be defined for tft eva extensions!"
@@ -16,7 +17,7 @@ public:
   TFT_eSPI tft;
   TFT_eSPI_ext(TFT_eSPI tftIn) : tft(tftIn) {}
 
-  int drawStringWithBar(const char* string, int y, int font, int yPadding = 0) {
+  EVA::Box drawStringWithBar(const String string, int y, int font, int yPadding = 0) {
     int textWidth = tft.textWidth(string, font);
     int textHeight = tft.fontHeight(font);
 
@@ -25,7 +26,7 @@ public:
     tft.setTextColor(TFT_RED);
     tft.drawString(string, SCREEN_CENTER_X - textWidth/2, y + yPadding, font);
 
-    return textHeight;
+    return EVA::Box(0, y, SCREEN_WIDTH, textHeight - 7 + 2*yPadding);
   }
   
 private:

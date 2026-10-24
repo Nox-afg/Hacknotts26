@@ -12,6 +12,10 @@ namespace EVA {
     virtual ~App() {}
     virtual void loop() {}
 
+    inline static std::vector<String> appNames = {
+      "Test App",
+      "Sketch"
+    };
     static EVA::App* getByName(const String& appName);
   private:
   };
