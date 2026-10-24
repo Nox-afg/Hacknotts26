@@ -1,0 +1,3 @@
+# a gitingore allows you to avoid sharing secret things to your github repo 
+.env
+
