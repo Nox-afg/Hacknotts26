@@ -53,7 +53,7 @@ class SnakeApp : public EVA::App {
 
       // Move on a timer so the snake moves at a slower speed
       static unsigned long lastMove = 0;
-      if (millis() - lastMove >= 250) {
+      if (millis() - lastMove >= 195) {
         lastMove = millis();
         Move();
       }
@@ -79,7 +79,7 @@ class SnakeApp : public EVA::App {
       }
 
       // Fruit Collision
-      if((x >= fruitCordX && x <= fruitCordX + 26) && (y <= fruitCordY && y >= fruitCordY - 26)) EatFruit(); //!! might change to x = fruitX
+      if((x >= fruitCordX - (CELL_WIDTH/2) && x <= fruitCordX + (CELL_WIDTH/2)) && (y <= fruitCordY + (CELL_HEIGHT/2) && y >= fruitCordY - (CELL_HEIGHT/2))) EatFruit(); //!! might change to x = fruitX
       else { // If not eating erase tail
         EVA::tft.fillRect(snakeTailX[tail], snakeTailY[tail], 20, 26, TFT_BLACK);
         snakeTailX[tail] = 0;
