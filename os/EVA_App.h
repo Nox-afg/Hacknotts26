@@ -14,7 +14,8 @@ namespace EVA {
 
     inline static std::vector<String> appNames = {
       "Test App",
-      "Sketch"
+      "Sketch",
+      "Snake App"
     };
     static EVA::App* getByName(const String& appName);
   private:

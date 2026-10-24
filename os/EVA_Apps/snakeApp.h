@@ -1,5 +1,5 @@
-#ifndef _snakeApp
-#define _snakeApp
+#ifndef _SnakeApp
+#define _SnakeApp
 
 #include <EVA.h>
 #include <EVA_app.h>
@@ -8,77 +8,86 @@
 #include <TFT_eSPI.h>
 #include <XPT2046_Touchscreen.h>
 
-class snakeApp : public EVA::App {
+class SnakeApp : public EVA::App {
   public:
-      snakeApp() : EVA::App("Test App") {
-        EVA::tft.drawCentreString("I am a snake app", SCREEN_CENTER_X, SCREEN_CENTER_Y, 2);
+    enum snakesDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
 
+    // Game state
+    int fruitCordX, fruitCordY;
+    int x, y;                 // snake head position
+    int playerScore;
+    bool isGameOver;
+    int snakeTailX[100], snakeTailY[100];
+    snakesDirection sDir;
 
-        // Game details
-        int fruitCordX, fruitCordY;
-        int snakeTailX[100], snakeTailY[100];
-        enum snakesDirection { STOP = 0, LEFT, RIGHT, UP, DOWN };
+    SnakeApp() : EVA::App("Snake App") {
+      GameInit();
+    }
 
-        GameInit();
+    ~SnakeApp() override {}
 
-      }
+    void loop() override {
+      if (EVA::touched) {
+        int tx = EVA::touchpoint.x;
+        int ty = EVA::touchpoint.y;
 
-      ~snakeApp() override {}
-
-      void loop() override {
-        if (EVA::touched) {
-          x = EVA::touchpoint.x
-          y = EVA::touchpoint.y 
-
-          // Calculate where in the screen
-
-          if(y > 240 || y < 80){
-            if(x < 120){
-              sDir = LEFT;
-            }
-            else{
-              sDir = RIGHT;
-            }
-          }
-          else if(y < 80){
-            sDir = DOWN;
-          }
-          else{
-            sDir = UP;
-          }
-
+        // Top band = UP, bottom band = DOWN, middle band = LEFT/RIGHT
+        if (ty < 80) {
+          sDir = UP;
         }
-      
+        else if (ty > 240) {
+          sDir = DOWN;
+        }
+        else if (tx < 120) {
+          sDir = LEFT;
+        }
+        else {
+          sDir = RIGHT;
+        }
       }
+
+      // Move on a timer so the snake isn't tied to loop() speed
+      static unsigned long lastMove = 0;
+      if (millis() - lastMove >= 150) {
+        lastMove = millis();
+        move();
+      }
+    }
+
   private:
-      void move(){
-         if(sDir == UP && y <= 294){
-            y = y + 26;
-         }
-         else if(sDir == DOWN && y >= 26){
-            y = y - 26;
-         }
-         else if(sDir == LEFT && x >= 20){
-            x = x - 20;
-         }
-         else if(sDir == RIGHT && x <= 220){
-            x = x + 20;
-         }
-         // redraw shape
+    void move() {
+      if (sDir == STOP) return;
+
+      // Erase old head
+      EVA::tft.fillRect(x, y, 20, 26, TFT_BLACK);
+
+      if (sDir == UP)         y -= 26;
+      else if (sDir == DOWN)  y += 26;
+      else if (sDir == LEFT)  x -= 20;
+      else if (sDir == RIGHT) x += 20;
+
+      // Wall collision
+      if (x < 0 || y < 0 || x + 20 > 240 || y + 26 > 320) {
+        GameInit();
+        return;
       }
 
-      void GameInit()
-      {
-          isGameOver = false;
-          sDir = STOP;
-          x = SCREEN_WIDTH / 2;
-          y = SCREEN_HEIGHT / 2;
-          fruitCordX = rand() % SCREEN_WIDTH;
-          fruitCordY = rand() % SCREEN_HEIGHT;
-          playerScore = 0;
+      EVA::tft.fillRect(x, y, 20, 26, TFT_RED);
+    }
 
-          tft.fillRect(x,y,20,26, TFT_RED)
-      }
+    void GameInit() {
+      isGameOver = false;
+      sDir = STOP;
+      x = 240 / 2;
+      y = 320 / 2;
+      fruitCordX = rand() % 240;
+      fruitCordY = rand() % 320;
+      playerScore = 0;
+
+      EVA::tft.fillScreen(TFT_BLACK);
+      EVA::tft.fillRect(x, y, 20, 26, TFT_RED);
+      EVA::tft.fillCircle(fruitCordX, fruitCordY, 10, TFT_PINK);
+    }
 };
 
 #endif
