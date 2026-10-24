@@ -1,5 +1,7 @@
-#ifndef _EVA_App
-#define _EVA_App
+#ifndef _EVA_app
+#define _EVA_app
+
+#include <Arduino.h>
 
 namespace EVA {
   class App {
@@ -9,6 +11,8 @@ namespace EVA {
     App(String nameIn) : name(nameIn) {}
     virtual ~App() {}
     virtual void loop() {}
+
+    static EVA::App* getByName(const String& appName);
   private:
   };
 };

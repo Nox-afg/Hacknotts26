@@ -1,34 +1,33 @@
 #ifndef _menu
 #define _menu
 
-#include <EVA_App.h>
+#include <EVA.h>
+#include <EVA_time.h>
+#include <EVA_app.h>
 #include <EVA_math.h>
 
 using namespace EVA;
 
 class MenuApp : public EVA::App {
-  public:
-      MenuApp() : EVA::App("Menu") {
-        Serial.println("Menu have been constructed");
-        EVA::tfte.drawStringWithBar("Menu", 0, 4, 1);
+public:
+  MenuApp() : EVA::App("Menu") {
+    int p = EVA::tfte.drawStringWithBar("Menu", 0, 4, 0);
 
-        EVA::tft.drawRect(SCREEN_CENTER_X-20, SCREEN_CENTER_Y-20, 40, 40, TFT_BLUE);
-      }
+    int p2 = EVA::tfte.drawStringWithBar("Test App", p+10, 4, 10);
+    testappbox = Box(0, p+10, SCREEN_WIDTH - 20, p2);
+  }
 
-      ~MenuApp() override {
-        Serial.println("Menu have been destructed");
-      }
+  ~MenuApp() override {}
 
-      void loop() override {
-        Vec3i touch;
+  void loop() override {
+    EVA::tft.drawCentreString(String(EVA::Time::seconds), SCREEN_CENTER_X, SCREEN_CENTER_Y, 2);
 
-        if (EVA::isTouchscreenTouched(touch)) {
-          if (EVA::Math::pointInBox(touch, SCREEN_CENTER_X-20, SCREEN_CENTER_Y-20, 40, 40)) {
-            Serial.printf("%d %d %d\n", touch.x, touch.y, touch.z);
-          }
-        }
-      }
-  private:
+    if (EVA::touched) {
+      if (Math::pointInBox(EVA::touchpoint, testappbox)) { EVA::switchToApp = "Test App"; Serial.println("Switching");}
+    }
+  }
+private:
+  Box testappbox;
 };
 
 #endif

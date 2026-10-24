@@ -1,8 +1,9 @@
 #ifndef _EVA
 #define _EVA
 
+// Display library
 #include <SPI.h>
-#include <TFT_eSPI.h>               // Display library
+#include <TFT_eSPI.h>               
 #define SCREEN_WIDTH 240
 #define SCREEN_HEIGHT 320
 #define SCREEN_CENTER_X (SCREEN_WIDTH/2)
@@ -10,37 +11,45 @@
 #define FONT_SIZE 4
 #include <EVA_TFT_eSPI_ext.h>
 
-#include <XPT2046_Touchscreen.h>    // Touch library
-#define XPT2046_IRQ 36 // Touchscreen pin definitions for CYD
+// Touch library
+#include <XPT2046_Touchscreen.h>    
+// Touchscreen pin definitions for CYD
+#define XPT2046_IRQ 36 
 #define XPT2046_MOSI 32
 #define XPT2046_MISO 39
 #define XPT2046_CLK 25
 #define XPT2046_CS 33
 
+#include <EVA_App.h>
 #include <EVA_math.h>
 
+#include <pocketpy.h>
+
 namespace EVA {
-  static SPIClass touchscreenSPI = SPIClass(VSPI);
-  static XPT2046_Touchscreen touchscreen(XPT2046_CS, XPT2046_IRQ);
-  static int touchX, touchY, touchZ;
+  inline SPIClass touchscreenSPI = SPIClass(VSPI);
+  inline XPT2046_Touchscreen touchscreen(XPT2046_CS, XPT2046_IRQ);
+  inline bool touched = false;
+  inline Vec3i touchpoint;
 
-  static TFT_eSPI tft = TFT_eSPI();
-  static TFT_eSPI_ext tfte = TFT_eSPI_ext(tft);
+  inline TFT_eSPI tft = TFT_eSPI();
+  inline TFT_eSPI_ext tfte = TFT_eSPI_ext(tft);
 
-  static bool quitCurrentApp = false;
+  inline App* currentApp;
+  inline String switchToApp = "";
 
-  static bool isTouchscreenTouched(Vec3i& position) {
+  inline void pollTouchscreen() {
     if (touchscreen.tirqTouched() && touchscreen.touched()) {
       TS_Point p = touchscreen.getPoint();
 
-      position.x = map(p.x, 200, 3700, 1, SCREEN_WIDTH);
-      position.y = map(p.y, 240, 3800, 1, SCREEN_HEIGHT);
-      position.z = p.z;
+      touchpoint.x = map(p.x, 200, 3700, 1, SCREEN_WIDTH);
+      touchpoint.y = map(p.y, 240, 3800, 1, SCREEN_HEIGHT);
+      touchpoint.z = p.z;
 
-      return true;
+      touched = true;
+      return;
     }
 
-    return false;
+    touched = false;
   }
 };
 #endif
