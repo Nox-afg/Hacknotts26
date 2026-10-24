@@ -8,10 +8,15 @@ using namespace EVA;
 
 class MenuApp : public EVA::App {
   public:
-      void setup() override {
+      MenuApp() : EVA::App("Menu") {
+        Serial.println("Menu have been constructed");
         EVA::tfte.drawStringWithBar("Menu", 0, 4, 1);
 
         EVA::tft.drawRect(SCREEN_CENTER_X-20, SCREEN_CENTER_Y-20, 40, 40, TFT_BLUE);
+      }
+
+      ~MenuApp() override {
+        Serial.println("Menu have been destructed");
       }
 
       void loop() override {

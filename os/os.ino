@@ -27,11 +27,22 @@ void setup() {
   //
 
   //Load App
-  currentApp = new MenuApp();
-  currentApp->setup();
+  currentApp = new TestApp();
 }
 
 void loop() {
+  Vec3i touch; 
+
+  if (currentApp->name != "Menu") {
+    tft.drawRect(SCREEN_CENTER_X - 10, SCREEN_HEIGHT - 40, 20, 40, TFT_RED);
+    if (EVA::isTouchscreenTouched(touch) && EVA::Math::pointInBox(touch, SCREEN_CENTER_X - 10, SCREEN_HEIGHT - 40, 20, 40)) {
+      //Quit App
+      delete currentApp;
+      tft.fillScreen(TFT_BLACK);
+      currentApp = new MenuApp();
+    }
+  }
+  
   if (EVA::Time::pumpVSynced()) {
     currentApp->loop();
   }

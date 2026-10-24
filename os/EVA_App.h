@@ -4,8 +4,11 @@
 namespace EVA {
   class App {
   public:
-    virtual void setup();
-    virtual void loop();
+    String name;
+
+    App(String nameIn) : name(nameIn) {}
+    virtual ~App() {}
+    virtual void loop() {}
   private:
   };
 };
