@@ -2,6 +2,9 @@
 #define _menu
 
 #include <EVA_App.h>
+#include <EVA_math.h>
+
+using namespace EVA;
 
 class MenuApp : public EVA::App {
   public:
@@ -12,7 +15,13 @@ class MenuApp : public EVA::App {
       }
 
       void loop() override {
+        Vec3i touch;
 
+        if (EVA::isTouchscreenTouched(touch)) {
+          if (EVA::Math::pointInBox(touch, SCREEN_CENTER_X-20, SCREEN_CENTER_Y-20, 40, 40)) {
+            Serial.printf("%d %d %d\n", touch.x, touch.y, touch.z);
+          }
+        }
       }
   private:
 };

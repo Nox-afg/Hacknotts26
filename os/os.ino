@@ -1,4 +1,5 @@
 #include <EVA.h>
+#include <EVA_Time.h>
 #include <EVA_TFT_eSPI_ext.h>
 
 #include <EVA_App.h>
