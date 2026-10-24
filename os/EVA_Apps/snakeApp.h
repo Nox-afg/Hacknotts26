@@ -13,13 +13,6 @@ class snakeApp : public EVA::App {
       snakeApp() : EVA::App("Test App") {
         EVA::tft.drawCentreString("I am a snake app", SCREEN_CENTER_X, SCREEN_CENTER_Y, 2);
 
-        #define SCREEN_WIDTH 320
-        #define SCREEN_HEIGHT 240
-
-        TFT_eSPI tft = TFT_eSPI(); // create tft instance
-
-        SPIClass touchscreenSPI = SPIClass(VSPI);  // Set up touch screen
-        XPT2046_Touchscreen touchscreen(XPT2046_CS, XPT2046_IRQ);
 
         // Game details
         int fruitCordX, fruitCordY;
@@ -30,44 +23,52 @@ class snakeApp : public EVA::App {
 
       }
 
-      // ~snakeApp() override {}
+      ~snakeApp() override {}
 
       void loop() override {
-        if (touchscreen.tirqTouched() && touchscreen.touched()) {
-          TF_Point p = touchscreen.getPoint();
-          x = map(p.x, 200, 3700, 1, SCREEN_WIDTH)  
-          y = map(p.y, 240, 3800, 1, SCREEN_HEIGHT)  
+        if (EVA::touched) {
+          x = EVA::touchpoint.x
+          y = EVA::touchpoint.y 
 
           // Calculate where in the screen
 
           if(y > 240 || y < 80){
             if(x < 120){
-              moveLeft();
+              sDir = LEFT;
             }
             else{
-              moveRight();
+              sDir = RIGHT;
             }
           }
           else if(y < 80){
-            moveDown();
+            sDir = DOWN;
           }
           else{
-            moveUp();
+            sDir = UP;
           }
 
         }
       
       }
   private:
-      void moveLeft(){}
-      void moveRight(){}
-      void moveUp(){}
-      void moveDown(){}
+      void move(){
+         if(sDir == UP && y <= 294){
+            y = y + 26;
+         }
+         else if(sDir == DOWN && y >= 26){
+            y = y - 26;
+         }
+         else if(sDir == LEFT && x >= 20){
+            x = x - 20;
+         }
+         else if(sDir == RIGHT && x <= 220){
+            x = x + 20;
+         }
+         // redraw shape
+      }
 
       void GameInit()
       {
-          Serial.begin(9600)
-          tft.reset()
           isGameOver = false;
           sDir = STOP;
           x = SCREEN_WIDTH / 2;
