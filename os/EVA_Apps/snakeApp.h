@@ -97,8 +97,8 @@ class SnakeApp : public EVA::App {
 
     void GameInit() {
       sDir = STOP;
-      x = 240 / 2;
-      y = 320 / 2;
+      x = 6 * CELL_WIDTH;
+      y = 6 * CELL_HEIGHT;
       fruitCordX = rand() % 240;
       fruitCordY = rand() % 320;
       playerScore = 0;
@@ -129,8 +129,8 @@ class SnakeApp : public EVA::App {
     }
 
     void CreateFruit(){
-      fruitCordX = rand() % 240;
-      fruitCordY = rand() % 320;
+      fruitCordX = (rand() % 11 + 1) * CELL_WIDTH;
+      fruitCordY = (rand() % 11 + 1) * CELL_HEIGHT;
       EVA::tft.fillCircle(fruitCordX, fruitCordY, 10, TFT_PINK);
     }
 };
