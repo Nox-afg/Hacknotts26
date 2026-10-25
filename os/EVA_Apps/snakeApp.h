@@ -79,7 +79,7 @@ class SnakeApp : public EVA::App {
       }
 
       // Fruit Collision
-      if((x >= fruitCordX - (CELL_WIDTH/2) && x <= fruitCordX + (CELL_WIDTH/2)) && (y <= fruitCordY + (CELL_HEIGHT/2) && y >= fruitCordY - (CELL_HEIGHT/2))) EatFruit(); //!! might change to x = fruitX
+      if (x == fruitCordX && y == fruitCordY) EatFruit(); //!! might change to x = fruitX
       else { // If not eating erase tail
         EVA::tft.fillRect(snakeTailX[tail], snakeTailY[tail], 20, 26, TFT_BLACK);
         snakeTailX[tail] = 0;
@@ -112,13 +112,16 @@ class SnakeApp : public EVA::App {
       textWidth = EVA::tft.textWidth("Score: ", 3);
       EVA::tft.fillScreen(TFT_BLACK);
       EVA::tft.fillRect(x, y, 20, 26, TFT_RED);
-      EVA::tft.fillCircle(fruitCordX, fruitCordY, 10, TFT_PINK);
       EVA::tft.drawString("Score : " + (String)playerScore, SCREEN_CENTER_X - textWidth/2, y, 3);
+
+      DrawFruit();
     }
 
     void EatFruit(){
       // Eat Fruit
-      EVA::tft.fillRect(fruitCordX, fruitCordY, 20, 26, TFT_BLACK);
+      EVA::tft.fillCircle(fruitCordX + CELL_WIDTH / 2,
+                      fruitCordY + CELL_HEIGHT / 2,
+                      CELL_WIDTH / 2, TFT_BLACK);
       fruitEaten = true;
       // Increase Length
       length++;
@@ -131,7 +134,13 @@ class SnakeApp : public EVA::App {
     void CreateFruit(){
       fruitCordX = (rand() % 11 + 1) * CELL_WIDTH;
       fruitCordY = (rand() % 11 + 1) * CELL_HEIGHT;
-      EVA::tft.fillCircle(fruitCordX, fruitCordY, 10, TFT_PINK);
+      DrawFruit();
+    }
+
+    void DrawFruit(){
+      EVA::tft.fillCircle(fruitCordX + CELL_WIDTH / 2,
+                fruitCordY + CELL_HEIGHT / 2,
+                CELL_WIDTH / 2, TFT_PINK);
     }
 };
 
