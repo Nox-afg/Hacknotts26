@@ -21,7 +21,7 @@ class SnakeApp : public EVA::App {
     int x, y, length, head, tail;            // snake head position and tail length
     int playerScore, textWidth;
     bool fruitEaten;
-    File bgFile;
+    File bgFile = returnFile(SD, "/bgMap.bin");
     uint16_t rowBuf[240];
     unsigned long lastFruit = 0;
     int snakeTailX[MAX_LEN], snakeTailY[MAX_LEN];
@@ -84,7 +84,8 @@ class SnakeApp : public EVA::App {
       if (x == fruitCordX && y == fruitCordY) EatFruit(); //!! might change to x = fruitX
       else { // If not eating erase tail
         // EVA::tft.fillRect(snakeTailX[tail], snakeTailY[tail], 20, 26, TFT_BLACK);
-        RestoreBackground(snakeTailX[tail], snakeTailY[tail], CELL_WIDTH, CELL_HEIGHT);
+        // RestoreBackground(snakeTailX[tail], snakeTailY[tail], CELL_WIDTH, CELL_HEIGHT);
+        EVA::tft.fillRect(snakeTailX[tail], snakeTailY[tail], 20, 26, TFT_BLACK);
         snakeTailX[tail] = 0;
         snakeTailY[tail] = 0;
         if(tail == MAX_LEN-1) tail = 0;
@@ -110,7 +111,6 @@ class SnakeApp : public EVA::App {
       tail = 0;
       length = 1;
     
-      bgFile = returnFile(SD, "/bgMap.bin");
       DrawBackground();
 
       snakeTailX[head] = x;
@@ -155,7 +155,7 @@ class SnakeApp : public EVA::App {
     }
 
     void RestoreBackground(int cx, int cy, int w, int h) {
-    EVA::tft.setSwapBytes(true);
+    EVA::tft.setSwapBytes(false);
     for (int row = 0; row < h; row++) {
       bgFile.seek(((uint32_t)(cy + row) * 240 + cx) * 2);
       bgFile.read((uint8_t*)rowBuf, w * 2);
