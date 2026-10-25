@@ -155,7 +155,7 @@ class SnakeApp : public EVA::App {
     }
 
     void RestoreBackground(int cx, int cy, int w, int h) {
-    // EVA::tft.setSwapBytes(true);
+    EVA::tft.setSwapBytes(true);
     for (int row = 0; row < h; row++) {
       bgFile.seek(((uint32_t)(cy + row) * 240 + cx) * 2);
       bgFile.read((uint8_t*)rowBuf, w * 2);
