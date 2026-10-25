@@ -3,7 +3,7 @@
 
 #include <EVA.h>
 #include <EVA_app.h>
-
+#include <EVA_SD.h>
 #include <SPI.h>
 #include <TFT_eSPI.h>
 #include <XPT2046_Touchscreen.h>
@@ -21,6 +21,8 @@ class SnakeApp : public EVA::App {
     int x, y, length, head, tail;            // snake head position and tail length
     int playerScore, textWidth;
     bool fruitEaten;
+    File bgFile;
+    uint16_t rowBuf[240];
     unsigned long lastFruit = 0;
     int snakeTailX[MAX_LEN], snakeTailY[MAX_LEN];
     snakesDirection sDir;
@@ -53,7 +55,7 @@ class SnakeApp : public EVA::App {
 
       // Move on a timer so the snake moves at a slower speed
       static unsigned long lastMove = 0;
-      if (millis() - lastMove >= 195) {
+      if (millis() - lastMove >= 180) {
         lastMove = millis();
         Move();
       }
@@ -107,6 +109,8 @@ class SnakeApp : public EVA::App {
       tail = 0;
       length = 1;
     
+      bgFile = returnFile(SD, "bgMap.bin");
+
       snakeTailX[head] = x;
       snakeTailY[head] = y;
       textWidth = EVA::tft.textWidth("Score: ", 3);
@@ -142,6 +146,19 @@ class SnakeApp : public EVA::App {
                 fruitCordY + CELL_HEIGHT / 2,
                 CELL_WIDTH / 2, TFT_PINK);
     }
+
+    void DrawBackground() {
+      RestoreBackground(0, 0, 240, 320);   
+    }
+
+    void RestoreBackground(int cx, int cy, int w, int h) {
+    // EVA::tft.setSwapBytes(true);
+    for (int row = 0; row < h; row++) {
+      bgFile.seek(((uint32_t)(cy + row) * 240 + cx) * 2);
+      bgFile.read((uint8_t*)rowBuf, w * 2);
+      EVA::tft.pushImage(cx, cy + row, w, 1, rowBuf);
+    }
+}
 };
 
 #endif
