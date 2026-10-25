@@ -1,12 +1,17 @@
 # https://pixabay.com/sound-effects/search/alarm/ 
+# https://pixabay.com/sound-effects/search/alarm/ 
 import playsound3
 import time
+import datetime 
+import os 
+
+now = datetime.datetime.now()
 
 CLEAR = "\033[2J"
 CLEAR_AND_RETURN = "\033[H"
 
 
-def alarm(seconds):
+def timer(seconds):
     time_elapsed = 0
 
     print(CLEAR)
@@ -14,16 +19,26 @@ def alarm(seconds):
         time.sleep(1)
         time_elapsed += 1
 
-        time_left = seconds - time_elapsed
-        minutes_left = time_left // 60
-        seconds_left = time_left % 60
+        time_left = seconds - time_elapsed # seconds left in total 
+        
+        hours_left = time_left // 3600
+        new_time_left = time_left % 3600
+        minutes_left = new_time_left // 60 # modulo division -- the total in minutes rounded down 
+        seconds_left = new_time_left % 60 # the remainder from the modulo division -- i.e. the leftover 
 
-        print(f"{CLEAR_AND_RETURN}Alarm will sound in: {minutes_left:02d}:{seconds_left:02d}")
+        print(f"{CLEAR_AND_RETURN}Alarm will sound in: {hours_left:02d}:{minutes_left:02d}:{seconds_left:02d}")
 
     playsound3.playsound("universfield-digital-alarm-clock-151927.mp3")
 
+# collect the hour, minute and second of the alarm (FIX: change the wording of the prompt to the user)
+hours = int(input("Which hour do you want the alarm to go off: "))
+minutes = int(input("Which minute do you want the alarm to go off: "))
+seconds = int(input("Which second do you want the alarm to go off: "))
 
-minutes = int(input("How many minutes to wait: "))
-seconds = int(input("How many seconds to wait: "))
-total_seconds = minutes * 60 + seconds
-alarm(total_seconds)
+
+# calculate the number of seconds until that alarm should go 
+alarm_time = datetime.datetime.combine(now.date(), datetime.time(hours, minutes, seconds)) # time we want the alarm to go off at
+seconds_left = (alarm_time - now).total_seconds() # turn the alarm time into the number of seconds until it goes off
+
+# count down on that number of seconds
+timer(seconds_left)

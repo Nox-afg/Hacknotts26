@@ -1,7 +1,7 @@
 # Flipphone Alarm Clock
 
 
-This is a description of my awesome alarm clock on my flipphone! Its really cool. 
+This is a description of my awesome alarm clock on my flipphone! It's really cool!
 
 ---
 
