@@ -110,7 +110,7 @@ class SnakeApp : public EVA::App {
       tail = 0;
       length = 1;
     
-      bgFile = returnFile(SD, "bgMap.bin");
+      bgFile = returnFile(SD, "/bgMap.bin");
       DrawBackground();
 
       snakeTailX[head] = x;

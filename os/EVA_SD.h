@@ -12,12 +12,14 @@
 
 File returnFile(fs::FS &fs, const char *path) {
   Serial.printf("Reading file: %s\n", path);
+  if (!SD.begin(PIN_SPI_CS)) {
+     Serial.println("SD mount failed");
+   }
 
   File file = fs.open(path);
   if (!file) {
     Serial.println("Failed to open file for reading");
   }
-  file.close();
 
   return file;
 }
