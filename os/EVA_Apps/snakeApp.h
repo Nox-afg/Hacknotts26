@@ -99,8 +99,8 @@ class SnakeApp : public EVA::App {
       sDir = STOP;
       x = 6 * CELL_WIDTH;
       y = 6 * CELL_HEIGHT;
-      fruitCordX = rand() % 240;
-      fruitCordY = rand() % 320;
+      fruitCordX = (rand() % 11 + 1) * CELL_WIDTH;
+      fruitCordY = (rand() % 11 + 1) * CELL_HEIGHT;
       playerScore = 0;
       fruitEaten = false;
       head = 0;
