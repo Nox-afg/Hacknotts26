@@ -5,14 +5,16 @@
 #include <EVA_App.h>
 #include <EVA_Apps/menu.h>
 
+#include "FS.h"
+#include "SD.h"
+#include "SPI.h"
+
 void setup() {
   Serial.begin(115200);
   Serial.println("ESP32 CYD Starting...");
 
   //Init Touchscreen
-  EVA::touchscreenSPI.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
-  EVA::touchscreen.begin(EVA::touchscreenSPI);
-  EVA::touchscreen.setRotation(0);
+  EVA::startTouch();
 
   //Init Display
   EVA::tft.init();
@@ -20,6 +22,7 @@ void setup() {
   EVA::tft.setRotation(0);
   EVA::tft.fillScreen(TFT_BLACK);
 
+  
   currentApp = new MenuApp();
 }
 
@@ -32,7 +35,7 @@ void loop() {
 
   if (switchToApp != "") goto QUITAPP;
 
-  if (currentApp->name != "Menu") {
+  if (currentApp->defaultClose) {
     tft.drawRect(SCREEN_CENTER_X - 10, SCREEN_HEIGHT - 20, 20, 20, TFT_RED);
 
     if (EVA::touched && EVA::Math::pointInBox(EVA::touchpoint, SCREEN_CENTER_X - 10, SCREEN_HEIGHT - 20, 20, 20)) {

@@ -1,4 +1,5 @@
 #include <EVA_time.h>
+#include <Arduino.h>
 
 bool EVA::Time::pumpVSynced() {
   time_point now = high_resolution_clock::now();
@@ -8,6 +9,8 @@ bool EVA::Time::pumpVSynced() {
     fps = frameCount;
     frameCount = 0;
     lastSecondTime = now;
+
+    //Serial.printf("FPS: %d\n", fps);
   }
 
   timeSinceLastFrame = duration<double>(now - lastFrameTime).count();

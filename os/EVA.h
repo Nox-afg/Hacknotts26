@@ -29,6 +29,12 @@ namespace EVA {
   inline bool touched = false;
   inline Vec3i touchpoint;
 
+  inline void startTouch() {
+    touchscreenSPI.begin(XPT2046_CLK, XPT2046_MISO, XPT2046_MOSI, XPT2046_CS);
+    touchscreen.begin(EVA::touchscreenSPI);
+    touchscreen.setRotation(0);
+  }
+
   inline TFT_eSPI tft = TFT_eSPI();
   inline TFT_eSPI_ext tfte = TFT_eSPI_ext(tft);
 
@@ -48,6 +54,10 @@ namespace EVA {
     }
 
     touched = false;
+  }
+
+  inline bool touchInBox(Box box) {
+    return touched && EVA::Math::pointInBox(touchpoint, box);
   }
 };
 #endif
